@@ -49,7 +49,7 @@ const Address = ({navigation}: any) => {
               fontWeight: '500',
             }}
             mt={2}
-            onPress={() => navigation.push('Home')}>
+            onPress={() => navigation.push('SignUpSuccess')}>
             Sign Up Now
           </Button>
         </VStack>

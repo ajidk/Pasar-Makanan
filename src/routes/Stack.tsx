@@ -1,12 +1,21 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {Address, Main, SignIn, SignUp} from '../pages';
+import {
+  Address,
+  Detail,
+  Main,
+  OrderSuccess,
+  Payment,
+  SignIn,
+  SignUp,
+  SignUpSuccess,
+} from '../pages';
 import BottomNavigation from './Bottom';
 
 const Stack = createNativeStackNavigator();
 const StackNavigation = () => {
   return (
-    <Stack.Navigator initialRouteName="SignIn">
+    <Stack.Navigator initialRouteName="Main">
       <Stack.Screen
         name="Main"
         component={Main}
@@ -30,6 +39,26 @@ const StackNavigation = () => {
       <Stack.Screen
         name="BottomNavigation"
         component={BottomNavigation}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Detail"
+        component={Detail}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OrderSuccess"
+        component={OrderSuccess}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SignUpSuccess"
+        component={SignUpSuccess}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -8,8 +8,8 @@ type Props = {
 const Main = (props: Props) => {
   return (
     <Box
-      safeArea
-      w="full"
+      safeAreaTop
+      flex={1}
       _dark={{
         bg: 'coolGray.800',
       }}
@@ -21,4 +21,4 @@ const Main = (props: Props) => {
   );
 };
 
-export default Main;
+export {Main};

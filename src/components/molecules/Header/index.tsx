@@ -20,7 +20,7 @@ const Header = (props: Props) => {
         <HStack alignItems="center" space={5}>
           {props.onPress && (
             <Pressable onPress={props.onPress}>
-              <ICArrow />
+              <ICArrow color="#020202" />
             </Pressable>
           )}
           <Box>

@@ -1,2 +1,3 @@
-import Main from './layouts';
-export {Main};
+export * from './atoms';
+export * from './layouts';
+export * from './molecules';

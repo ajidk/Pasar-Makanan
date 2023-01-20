@@ -1,7 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {ICHome, ICOrder, ICProfile} from '../assets/img';
-import {Home, Order, Profile, SignIn} from '../pages';
+import {Home, Order, Profile} from '../pages';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,7 +11,6 @@ const BottomNavigation = () => {
       screenOptions={({route}: any) => ({
         tabBarIcon: ({focused}: any) => {
           let iconName: any;
-
           if (route.name === 'Home') {
             iconName = focused ? (
               <ICHome color="#FFC700" />
@@ -31,10 +30,11 @@ const BottomNavigation = () => {
               <ICProfile color="#E2E2E2" />
             );
           }
-
           return iconName;
         },
         headerShown: false,
+        tabBarLabel: '',
+        tabBarStyle: {paddingVertical: 16},
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Order" component={Order} />
