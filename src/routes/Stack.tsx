@@ -15,7 +15,7 @@ import BottomNavigation from './Bottom';
 const Stack = createNativeStackNavigator();
 const StackNavigation = () => {
   return (
-    <Stack.Navigator initialRouteName="Main">
+    <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen
         name="Main"
         component={Main}

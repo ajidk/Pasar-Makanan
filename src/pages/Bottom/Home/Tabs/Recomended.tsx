@@ -10,7 +10,7 @@ const Recomended = () => {
       {Object.keys(colors.cyan).map((key, index) => {
         return (
           <ListData
-            key={`asd${index}`}
+            key={`rec${index}`}
             img={PMeditation}
             title="recomended"
             desc={4000}

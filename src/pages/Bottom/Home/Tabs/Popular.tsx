@@ -10,7 +10,7 @@ const Popular = () => {
       {Object.keys(colors.cyan).map((key, index) => {
         return (
           <ListData
-            key={`asd${index}`}
+            key={`pop${index}`}
             img={PMeditation}
             title="popular"
             desc={4000}

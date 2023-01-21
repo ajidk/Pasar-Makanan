@@ -9,11 +9,29 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {ICArrow, PFood} from '../../../assets/img';
 import {Star} from '../../../components/atoms';
+import {decrement, increment} from '../../../features/counter/slice';
+import {loadTransaction} from '../../../features/transactions/actions';
 
 const Detail = ({navigation}: any) => {
+  // const count = useSelector((state: RootState) => state.random.value);
+  // const dispatch = useDispatch();
+  const count = useAppSelector(state => state.random.value);
+  const {transactions} = useAppSelector(state => state.transactions);
+  const dispatch = useAppDispatch();
+
+  const getData = useCallback(() => {
+    dispatch(loadTransaction({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+  console.log('salam 5 jari', transactions);
+
   return (
     <Box safeAreaTop flex={1}>
       <Box position="relative" w="full">
@@ -48,31 +66,35 @@ const Detail = ({navigation}: any) => {
               <Star price={3.2} />
             </VStack>
             <HStack space={2} alignItems="center">
-              <Box
-                w={26}
-                h={26}
-                borderWidth={1}
-                rounded="full"
-                justifyContent="center"
-                alignItems={'center'}>
-                -
-              </Box>
+              <Pressable onPress={() => dispatch(decrement())}>
+                <Box
+                  w={26}
+                  h={26}
+                  borderWidth={1}
+                  rounded="full"
+                  justifyContent="center"
+                  alignItems={'center'}>
+                  -
+                </Box>
+              </Pressable>
               <Input
-                value={'1'}
+                value={String(count)}
                 w={4}
                 textAlign="center"
                 p={0}
                 borderWidth="0"
               />
-              <Box
-                w={26}
-                h={26}
-                borderWidth={1}
-                rounded="full"
-                justifyContent="center"
-                alignItems={'center'}>
-                +
-              </Box>
+              <Pressable onPress={() => dispatch(increment())}>
+                <Box
+                  w={26}
+                  h={26}
+                  borderWidth={1}
+                  rounded="full"
+                  justifyContent="center"
+                  alignItems={'center'}>
+                  +
+                </Box>
+              </Pressable>
             </HStack>
           </HStack>
           <Text mt={3} fontSize={14} fontWeight={400} color="#8D92A3">

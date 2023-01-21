@@ -77,7 +77,7 @@ const Home = ({navigation}: any) => {
             if (index >= 1 && index <= 5)
               return (
                 <ListBox
-                  key={index}
+                  key={'12' + index}
                   onPress={() => navigation.push('Detail')}
                   title={`Cherry Healthy ${item}`}
                   price={4.5}

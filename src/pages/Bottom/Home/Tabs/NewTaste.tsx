@@ -10,7 +10,7 @@ const NewTaste = () => {
       {Object.keys(colors.cyan).map((key, index) => {
         return (
           <ListData
-            key={`asd${index}`}
+            key={`taste${index}`}
             img={PMeditation}
             title="new taste"
             desc={4000}
