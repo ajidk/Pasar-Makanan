@@ -1,11 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {counterSlice} from '../features/counter/slice';
 import {transactionSlice} from '../features/transactions/slice';
+import {userSlice} from '../features/users/slice';
 
 export const store = configureStore({
   reducer: {
     random: counterSlice.reducer,
-    transactions: transactionSlice.reducer,
+    transaction: transactionSlice.reducer,
+    users: userSlice.reducer,
   },
 });
 

@@ -1,148 +1,70 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import connection from '../../config/connection';
 
-export const loadTransaction = createAsyncThunk<
-  any,
-  {
-    id?: string;
-    limit?: string;
-    food_id?: string;
-    status?: string;
-    isRefresh?: boolean;
-  }
->('get-transaction', async (args, {rejectWithValue, getState}: any) => {
-  let dataFollower = [];
-  let loadMore = false;
-  const currentData = getState().follow.listFollower;
+interface FoodStateParams {
+  id?: string;
+  limit?: number;
+  name?: string;
+  types?: string;
+  price_from?: number;
+  price_to?: number;
+  rate_from?: number;
+  rate_to?: number;
+}
 
-  try {
-    const response = await connection.get(
-      `transaction/?id=${args.id}&limit=${args.limit}&food_id=${args.food_id}&status=${args.status}`,
-    );
+interface TransactionStateParams {
+  id: string;
+  limit?: string;
+  food_id?: string;
+  status?: string;
+}
 
-    let messages = 'something went wrong';
-    if (response.status !== 200) {
-      throw new Error(messages);
+export const loadTransaction = createAsyncThunk<any, TransactionStateParams>(
+  'get-transaction',
+  async ({id, limit, food_id, status}) => {
+    try {
+      const response = await connection.get(
+        `/transaction?id=${id}&limit=${limit}&food_id=${food_id}&status=${status}`,
+      );
+
+      let messages = 'something went wrong';
+
+      if (response.status !== 200) {
+        throw new Error(messages);
+      }
+      const {data} = response.data;
+
+      return {
+        data: data,
+      };
+    } catch (e: any) {
+      console.log('ini Error bosque', e);
     }
-    const {status, message, data, total} = response.data;
-    console.log('ini respon', response);
+  },
+);
 
-    // console.log('Total Follower',total)
-    const statusRespon = status;
-    const messageRespon = message;
-    if (statusRespon !== 200) {
-      throw new Error(messageRespon.error);
+export const loadFood = createAsyncThunk<any, FoodStateParams>(
+  'random/food',
+  async ({id, limit, name, types, price_from, price_to, rate_from}) => {
+    try {
+      const response = await connection.get(
+        // `/food`,
+        `/food?limit=${limit && limit}&id=${id && id}&types=${types && types}`,
+        // `/food?limit=${limit}&id=${id}&name=${name}&types=${types}&price_from=${price_from}&price_to=${price_to}&rate_from=${rate_from}`,
+      );
+
+      let messages = 'something went wrong';
+
+      if (response.status !== 200) {
+        throw new Error(messages);
+      }
+      const {data} = response.data;
+
+      return {
+        data: Object.values(data.data),
+      };
+    } catch (e: any) {
+      console.log('ini Error bosque', e);
     }
-    const newData = Object.values(data).sort((a: any, b: any) => b.id - a.id);
-    if (args.isRefresh === false) {
-      dataFollower = currentData.concat(newData);
-    } else {
-      dataFollower = newData;
-    }
-    if (Number(total) > dataFollower.length) {
-      loadMore = true;
-    } else {
-      loadMore = false;
-    }
-    // console.log('testing', dataFollower)
-    return {
-      data: dataFollower,
-      loadMore: loadMore,
-      total: total,
-    };
-  } catch (e: any) {
-    console.log('Error', e.response.data);
-    return rejectWithValue(e.response.data);
-  }
-});
-
-// export const followUnfollow = createAsyncThunk<
-//   any,
-//   {
-//     user: string;
-//   }
-// >('follow/follow-following', async (args, {rejectWithValue}) => {
-//   // let dataFollower = [];
-//   // let loadMore = false;
-//   // const currentData = getState().follow.listFollowing;
-//   try {
-//     const formData = new FormData();
-//     formData.append('user_id', args.user);
-
-//     const response = await connection.post(`/user/follow/`, formData);
-//     let messages = 'something went wrong';
-//     if (response.status !== 200) {
-//       throw new Error(messages);
-//     }
-//     const {status, message} = response.data;
-//     // console.log('Newdata')
-//     // const newData = data
-//     const statusRespon = status;
-//     const messageRespon = message;
-//     if (statusRespon !== 200) {
-//       throw new Error(messageRespon.error);
-//     }
-//     return 'newData';
-//   } catch (e: any) {
-//     console.log('Error', e.response.data);
-//     return rejectWithValue(e.response.data);
-//   }
-// });
-
-// export const loadFollowing = createAsyncThunk<
-//   any,
-//   {
-//     user: string;
-//     offset: string;
-//     limits: string;
-//     search: string;
-//     isRefresh: boolean;
-//   }
-// >('follow/load-following', async (args, {rejectWithValue, getState}: any) => {
-//   let dataFollower = [];
-//   let loadMore = false;
-//   const currentData = getState().follow.listFollowing;
-//   try {
-//     const response = await connection.get(
-//       `/user/following/${args.user}?offset=${args.offset}&limit=${args.limits}&search=${args.search}`,
-//     );
-//     let messages = 'something went wrong';
-//     if (response.status !== 200) {
-//       throw new Error(messages);
-//     }
-//     const {status, message, data, total} = response.data;
-//     // console.log('Total Following',total)
-//     const statusRespon = status;
-//     const messageRespon = message;
-//     if (statusRespon !== 200) {
-//       throw new Error(messageRespon.error);
-//     }
-//     // console.log('data',data, Object.values(data))
-//     const macan = Object.values(data);
-//     let newData;
-//     if (macan.length > 1) {
-//       newData = macan.sort((a: any, b: any) => b.id - a.id);
-//     } else {
-//       newData = macan;
-//     }
-//     if (args.isRefresh === false) {
-//       dataFollower = currentData.concat(newData);
-//     } else {
-//       dataFollower = newData;
-//     }
-//     if (Number(total) > dataFollower.length) {
-//       loadMore = true;
-//     } else {
-//       loadMore = false;
-//     }
-//     return {
-//       // type: Action.SET_LIST_FOLLOWING,
-//       data: dataFollower,
-//       loadMore: loadMore,
-//       total: total,
-//     };
-//   } catch (e: any) {
-//     console.log('Error', e.response.data);
-//     return rejectWithValue(e.response.data);
-//   }
-// });
+  },
+);

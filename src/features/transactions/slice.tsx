@@ -1,22 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {createSlice} from '@reduxjs/toolkit';
-import {loadTransaction} from './actions';
+import {loadFood, loadTransaction} from './actions';
+
+interface PropsTransaction {
+  transactions: any;
+  foods: any;
+  loadMoreFollowing: boolean;
+  loading: boolean;
+  error: boolean;
+}
+
+const initialState: PropsTransaction = {
+  transactions: [],
+  foods: [],
+  loadMoreFollowing: false,
+  loading: false,
+  error: false,
+};
 
 export const transactionSlice = createSlice({
   name: 'follow',
-  initialState: {
-    transactions: [],
-    loadMoreFollower: false,
-    listFollowing: [],
-    loadMoreFollowing: false,
-    loading: false,
-    error: false,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: builder => {
     builder.addCase(loadTransaction.fulfilled, (state, action) => {
       state.transactions = action.payload.data;
-      state.loadMoreFollower = action.payload.loadMore;
       state.loading = false;
       state.error = false;
     });
@@ -28,19 +36,18 @@ export const transactionSlice = createSlice({
       state.loading = true;
       state.error = false;
     });
-    // builder.addCase(loadFollowing.fulfilled, (state, action) => {
-    //   state.listFollowing = action.payload.data;
-    //   state.loadMoreFollowing = action.payload.loadMore;
-    //   state.loading = false;
-    //   state.error = false;
-    // });
-    // builder.addCase(loadFollowing.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = true;
-    // });
-    // builder.addCase(loadFollowing.pending, (state, action) => {
-    //   state.loading = true;
-    //   state.error = false;
-    // });
+    builder.addCase(loadFood.fulfilled, (state, action) => {
+      state.foods = action.payload;
+      state.loading = false;
+      state.error = false;
+    });
+    builder.addCase(loadFood.rejected, (state, action) => {
+      state.loading = false;
+      state.error = true;
+    });
+    builder.addCase(loadFood.pending, (state, action) => {
+      state.loading = true;
+      state.error = false;
+    });
   },
 });

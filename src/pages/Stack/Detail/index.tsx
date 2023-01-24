@@ -9,28 +9,26 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {ICArrow, PFood} from '../../../assets/img';
 import {Star} from '../../../components/atoms';
+
 import {decrement, increment} from '../../../features/counter/slice';
-import {loadTransaction} from '../../../features/transactions/actions';
 
-const Detail = ({navigation}: any) => {
-  // const count = useSelector((state: RootState) => state.random.value);
-  // const dispatch = useDispatch();
-  const count = useAppSelector(state => state.random.value);
-  const {transactions} = useAppSelector(state => state.transactions);
+const Detail = ({navigation, route}: any) => {
+  const {value} = useAppSelector(state => state.random);
   const dispatch = useAppDispatch();
+  const {item} = route.params;
+  console.log(item);
 
-  const getData = useCallback(() => {
-    dispatch(loadTransaction({}));
-  }, [dispatch]);
+  // const {transactions} = useAppSelector(state => state.transaction);
 
-  useEffect(() => {
-    getData();
-  }, [getData]);
-  console.log('salam 5 jari', transactions);
+  // // console.log('result transaction', transactions);
+
+  // useEffect(() => {
+  //   dispatch(loadTransaction({id: id}));
+  // }, [dispatch, id]);
 
   return (
     <Box safeAreaTop flex={1}>
@@ -61,9 +59,9 @@ const Detail = ({navigation}: any) => {
           <HStack justifyContent="space-between" alignItems="center">
             <VStack>
               <Text fontSize={16} fontWeight={400} color="#020202">
-                Cherry Healthy
+                {item.name}
               </Text>
-              <Star price={3.2} />
+              <Star price={item.price} />
             </VStack>
             <HStack space={2} alignItems="center">
               <Pressable onPress={() => dispatch(decrement())}>
@@ -78,7 +76,7 @@ const Detail = ({navigation}: any) => {
                 </Box>
               </Pressable>
               <Input
-                value={String(count)}
+                value={String(value)}
                 w={4}
                 textAlign="center"
                 p={0}
@@ -98,21 +96,19 @@ const Detail = ({navigation}: any) => {
             </HStack>
           </HStack>
           <Text mt={3} fontSize={14} fontWeight={400} color="#8D92A3">
-            Makanan khas Bandung yang cukup sering dipesan oleh anak muda dengan
-            pola makan yang cukup tinggi dengan mengutamakan diet yang sehat dan
-            teratur.
+            {item.description}
           </Text>
           <Text mt={4} fontSize={14} fontWeight={400} color="#020202">
             Ingredients:
           </Text>
           <Text mt={1} fontSize={14} fontWeight={400} color="#8D92A3">
-            Seledri, telur, blueberry, madu.
+            {item.ingredients}
           </Text>
         </ScrollView>
         <HStack mt="auto" justifyContent="space-between">
           <VStack>
             <Text>Total price:</Text>
-            <Text>IDR 12.289.000</Text>
+            <Text>IDR {item.price * value}</Text>
           </VStack>
           <Button
             onPress={() => navigation.push('Payment')}

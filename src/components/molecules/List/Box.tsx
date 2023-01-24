@@ -16,12 +16,12 @@ const ListBox = (props: Props) => {
       <Box bg="white" w={200} h={210} rounded={8}>
         <Box>
           <Image
-            source={props.img ? props.img : PMotor}
+            source={props.img ? {uri: props.img} : PMotor}
             alt="Alternate Text"
             w="full"
             h={140}
             roundedTop={8}
-            resizeMode="contain"
+            resizeMode="cover"
           />
         </Box>
         <Box p={3}>

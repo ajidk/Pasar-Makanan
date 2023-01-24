@@ -1,35 +1,39 @@
-import axios from 'axios';
-import {Button, VStack} from 'native-base';
+import {Button, useToast, VStack} from 'native-base';
 import React, {useState} from 'react';
-import {Main} from '../../../components';
+import {useAppDispatch} from '../../../app/hooks';
+import {Main, Toast} from '../../../components';
 import {Header, RNInput} from '../../../components/molecules';
+import {loginUser} from '../../../features/users/actions';
+import {updateStorage} from '../../../utils';
 
 const SignIn = ({navigation}: any) => {
+  const dispatch = useAppDispatch();
+  const toast = useToast();
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
 
   const handleSignIn = async () => {
-    console.log(form);
-    await axios
-      .post('http://foodmarket-backend.buildwithangga.id/api/login', form)
-      .then(response => {
-        console.log('success', response);
+    dispatch(loginUser(form))
+      .then(item => {
+        if (item.payload.user) {
+          updateStorage('user_data', item.payload);
+          toast.show({
+            placement: 'top',
+            render: () => <Toast title="Login berhasil" />,
+          });
+          navigation.navigate('BottomNavigation');
+        } else {
+          toast.show({
+            placement: 'top',
+            render: () => <Toast title="Login gagal" bg="red.500" />,
+          });
+        }
       })
-      .catch(function (error) {
-        console.info('error kau akan punah', error);
+      .catch(error => {
+        console.log('error', error);
       });
-    // axios
-    //   .get('https://randomuser.me/api/?results=30')
-    //   .then(({data}) => {
-    //     const {results} = data;
-    //     // setUsers(results);
-    //     console.log(results);
-    //   })
-    //   .finally(() => {
-    //     // setLoading(false);
-    //   });
   };
 
   return (

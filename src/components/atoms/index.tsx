@@ -1,3 +1,4 @@
 import Star from './Star';
+import Toast from './toast';
 
-export {Star};
+export {Star, Toast};

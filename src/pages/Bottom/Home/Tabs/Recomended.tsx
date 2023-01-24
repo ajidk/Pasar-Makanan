@@ -1,20 +1,30 @@
-import {ScrollView, useTheme} from 'native-base';
-import React from 'react';
-import {PMeditation} from '../../../../assets/img';
+import {ScrollView} from 'native-base';
+import React, {useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../app/hooks';
 import {ListData} from '../../../../components/molecules';
+import {loadFood} from '../../../../features/transactions/actions';
 
 const Recomended = () => {
-  const {colors} = useTheme();
+  const dispatch = useAppDispatch();
+  const {foods} = useAppSelector(state => state.transaction);
+
+  useEffect(() => {
+    dispatch(loadFood({id: '', limit: 10, types: 'recommended'}));
+  }, [dispatch]);
+
+  console.log('detail',foods);
+  
+
   return (
     <ScrollView px={6}>
-      {Object.keys(colors.cyan).map((key, index) => {
+      {foods?.data?.map((item: any, idx: number) => {
         return (
           <ListData
-            key={`rec${index}`}
-            img={PMeditation}
-            title="recomended"
-            desc={4000}
-            rating={4.6}
+            key={`recomended-${idx}`}
+            img={item.picturePath}
+            title={item.name}
+            desc={item.price}
+            rating={item.rate}
           />
         );
       })}

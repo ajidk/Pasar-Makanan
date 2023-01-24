@@ -4,7 +4,6 @@
 /* eslint-disable curly */
 import {
   Box,
-  Flex,
   HStack,
   Pressable,
   ScrollView,
@@ -12,11 +11,13 @@ import {
   useTheme,
   VStack,
 } from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, StatusBar} from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
+import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {PMotor} from '../../../assets/img';
 import {Header, ListBox} from '../../../components/molecules';
+import {loadFood} from '../../../features/transactions/actions';
 import NewTaste from './Tabs/NewTaste';
 import Popular from './Tabs/Popular';
 import Recomended from './Tabs/Recomended';
@@ -28,7 +29,6 @@ const renderScene = SceneMap({
 });
 
 const Home = ({navigation}: any) => {
-  const {colors} = useTheme();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'newTaste', title: 'New Taste'},
@@ -67,22 +67,28 @@ const Home = ({navigation}: any) => {
       </Box>
     );
   };
+  const dispatch = useAppDispatch();
+  const {foods} = useAppSelector(state => state.transaction);
+
+  useEffect(() => {
+    dispatch(loadFood({id: '', limit: 10, types: ''}));
+  }, [dispatch]);
 
   return (
     <VStack h="full" safeAreaTop>
       <Header title="FoodMarket" desc="Let’s get some foods" img={PMotor} />
       <ScrollView h={'10'} w="full" horizontal={true} pt={6}>
         <HStack space={6} px={6}>
-          {Object.keys(colors.cyan).map((item, index) => {
-            if (index >= 1 && index <= 5)
-              return (
-                <ListBox
-                  key={'12' + index}
-                  onPress={() => navigation.push('Detail')}
-                  title={`Cherry Healthy ${item}`}
-                  price={4.5}
-                />
-              );
+          {foods?.data?.map((item: any, idx: number) => {
+            return (
+              <ListBox
+                key={idx}
+                onPress={() => navigation.push('Detail', {item: item})}
+                title={item?.name}
+                img={item?.picturePath}
+                price={item?.rate}
+              />
+            );
           })}
         </HStack>
       </ScrollView>

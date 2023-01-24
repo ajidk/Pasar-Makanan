@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 import {PMeditation} from '../../../assets/img';
 import {Star} from '../../atoms';
 
-type Props = {
+interface Props {
   img: any;
   title: string;
   desc: number;
@@ -12,22 +12,31 @@ type Props = {
   items?: number;
   status?: boolean;
   date?: any;
-};
+}
 
-const ListData = (props: Props) => {
+const ListData: React.FC<Props> = ({
+  img,
+  title,
+  desc,
+  rating,
+  itemDesc,
+  items,
+  status,
+  date,
+}) => {
   return (
     <HStack my={4} justifyContent="space-between" alignItems="center">
       <HStack alignItems="center" space={3}>
         <Image
-          source={props.img ? props.img : PMeditation}
+          source={img ? {uri: img} : PMeditation}
           h={60}
           w={60}
           rounded={8}
-          alt={props.title}
+          alt={title}
         />
         <Box>
           <Text fontSize={16} fontWeight={400} color="#020202">
-            {props.title}
+            {title}
           </Text>
           <HStack
             fontSize={13}
@@ -36,23 +45,23 @@ const ListData = (props: Props) => {
             flexDirection="row"
             space={1}
             alignItems="center">
-            {props.itemDesc && (
+            {itemDesc && (
               <Fragment>
-                <Text color="#8D92A3">{props.itemDesc} items</Text>
+                <Text color="#8D92A3">{itemDesc} items</Text>
                 <Box w={1} h={1} bg="#8D92A3" rounded="full" />
               </Fragment>
             )}
-            <Text color="#8D92A3">IDR {props.desc}</Text>
+            <Text color="#8D92A3">IDR {desc}</Text>
           </HStack>
         </Box>
       </HStack>
-      {props.rating && <Star price={props.rating} />}
-      {props.items && <Text color="#8D92A3">{props.items} items</Text>}
-      {(props.status || props.date) && (
+      {rating && <Star price={rating} />}
+      {items && <Text color="#8D92A3">{items} items</Text>}
+      {(status || date) && (
         <VStack alignItems="flex-end">
-          <Text fontSize={10}>{props.date}</Text>
-          <Text fontSize={10} color={props.status ? 'green.500' : 'red.500'}>
-            {props.status ? 'Successed' : 'Canceled'}
+          <Text fontSize={10}>{date}</Text>
+          <Text fontSize={10} color={status ? 'green.500' : 'red.500'}>
+            {status ? 'Successed' : 'Canceled'}
           </Text>
         </VStack>
       )}

@@ -1,1 +1,1 @@
-export const server = 'http://foodmarket-backend.buildwithangga.id/api/';
+export const server = 'https://foodmarket-backend.buildwithangga.id/api';

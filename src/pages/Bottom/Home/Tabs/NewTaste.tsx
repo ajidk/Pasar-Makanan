@@ -1,20 +1,28 @@
-import {ScrollView, useTheme} from 'native-base';
-import React from 'react';
-import {PMeditation} from '../../../../assets/img';
+import {ScrollView} from 'native-base';
+import React, {useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../app/hooks';
+
 import {ListData} from '../../../../components/molecules';
+import {loadFood} from '../../../../features/transactions/actions';
 
 const NewTaste = () => {
-  const {colors} = useTheme();
+  const dispatch = useAppDispatch();
+  const {foods} = useAppSelector(state => state.transaction);
+
+  useEffect(() => {
+    dispatch(loadFood({id: '', limit: 10, types: 'new_food'}));
+  }, [dispatch]);
+
   return (
     <ScrollView px={6}>
-      {Object.keys(colors.cyan).map((key, index) => {
+      {foods?.data?.map((item: any, idx: number) => {
         return (
           <ListData
-            key={`taste${index}`}
-            img={PMeditation}
-            title="new taste"
-            desc={4000}
-            rating={4.6}
+            key={`new-taste-${idx}`}
+            img={item.picturePath}
+            title={item.name}
+            desc={item.price}
+            rating={item.rate}
           />
         );
       })}

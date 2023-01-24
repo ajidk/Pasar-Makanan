@@ -1,46 +1,37 @@
-// import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, {AxiosRequestConfig} from 'axios';
+import {useState} from 'react';
+import {getStorage} from '../utils';
+import {server} from './server';
 
-// const baseURL = 'http://foodmarket-backend.buildwithangga.id/api/';
+export const RequestAxios = () => {
+  const [userData, setUser] = useState<any>();
 
-// const axiosInstance = axios.create({
-//   baseURL,
-// });
-// axiosInstance.defaults.headers.accept = '*/*';
-// axiosInstance.defaults.headers['Content-Type'] = 'application/json';
+  getStorage('user_data').then(res => {
+    setUser(res);
+  });
+  return userData;
+};
 
-// export default axiosInstance;
+const connection = axios.create({
+  baseURL: server,
+});
 
-// import axios from 'axios';
-// import type {AxiosRequestConfig} from 'axios';
-// import {server} from './server';
+connection.interceptors.request.use(
+  async (config: AxiosRequestConfig) => {
+    let values: any;
+    values = await AsyncStorage.multiGet(['user_data']);
 
-// const connection = axios.create({
-//   baseURL: server,
-// });
+    config.headers = {
+      'content-type': 'multipart/form-data',
+      Accept: '*/*',
+      Authorization: 'Bearer ' + JSON.parse(values[0][1]).access_token,
+    };
+    return config;
+  },
+  error => {
+    Promise.reject(error);
+  },
+);
 
-// connection.interceptors.request.use(
-//   async (config: AxiosRequestConfig) => {
-//     const userData = window.localStorage.getItem('user_session');
-
-//     let tokenData = null;
-//     let lang = 'id';
-//     if (userData) {
-//       const transformedData = JSON.parse(userData);
-//       const {token, data} = transformedData;
-//       tokenData = token;
-//       lang = data ? data.language : 'id';
-//     }
-//     config.headers = {
-//       'Content-Type': 'multipart/form-data',
-//       Accept: '*/*',
-//       Authorization: 'Bearer ' + String(tokenData),
-//       lang: String(lang),
-//     };
-//     return config;
-//   },
-//   error => {
-//     Promise.reject(error);
-//   },
-// );
-
-// export default connection;
+export default connection;

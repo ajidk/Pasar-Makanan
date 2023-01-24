@@ -12,11 +12,13 @@ import {
   useColorModeValue,
   VStack,
 } from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, Dimensions} from 'react-native';
 import {SceneMap, TabView} from 'react-native-tab-view';
+import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {PCake} from '../../../assets/img';
 import {Header} from '../../../components';
+import {loadUserData} from '../../../features/users/actions';
 import InProgress from './Tabs/Accounts';
 import PostOrders from './Tabs/FoodMarkets';
 
@@ -34,6 +36,13 @@ const Profile = ({navigation}: any) => {
     {key: 'account', title: 'Account', nav: navigation},
     {key: 'foodmarkets', title: 'FoodMarket', nav: navigation},
   ]);
+
+  const {lists} = useAppSelector(state => state.users);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadUserData());
+  }, [dispatch]);
 
   const renderTabBar = (props: any) => {
     return (
@@ -81,16 +90,16 @@ const Profile = ({navigation}: any) => {
               size={150}
               borderRadius={100}
               source={{
-                uri: 'https://wallpaperaccess.com/full/317501.jpg',
+                uri: lists.profile_photo_url,
               }}
               alt="Foto"
             />
           </Box>
           <Text fontSize={18} fontWeight="500" mt={4}>
-            Suraji
+            {lists.name}
           </Text>
           <Text color={'#8D92A3'} mt={2}>
-            surajidk12@gmail.com
+            {lists.email}
           </Text>
         </Center>
         <TabView
