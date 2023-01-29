@@ -39,8 +39,6 @@ const SignUp = ({navigation}: any) => {
   });
 
   const handleContinue = () => {
-    console.log(form);
-
     navigation.push('Address', {dataSignUp: form});
   };
 

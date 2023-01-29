@@ -12,7 +12,7 @@ import {
   VStack,
 } from 'native-base';
 import React, {useEffect, useState} from 'react';
-import {Animated, StatusBar} from 'react-native';
+import {Animated} from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {PMotor} from '../../../assets/img';
@@ -22,30 +22,44 @@ import NewTaste from './Tabs/NewTaste';
 import Popular from './Tabs/Popular';
 import Recomended from './Tabs/Recomended';
 
-const renderScene = SceneMap({
-  newTaste: NewTaste,
-  popular: Popular,
-  recomended: Recomended,
-});
-
 const Home = ({navigation}: any) => {
   const [index, setIndex] = useState(0);
+  const [type, setType] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const {foods} = useAppSelector(state => state.transaction);
+
+  const renderScene = SceneMap({
+    newTaste: NewTaste,
+    popular: Popular,
+    recomended: Recomended,
+  });
+
   const [routes] = useState([
-    {key: 'newTaste', title: 'New Taste'},
-    {key: 'popular', title: 'Popular'},
-    {key: 'recomended', title: 'Recommended'},
+    {
+      key: 'newTaste',
+      title: 'New Taste',
+    },
+    {
+      key: 'popular',
+      title: 'Popular',
+    },
+    {
+      key: 'recomended',
+      title: 'Recommended',
+    },
   ]);
 
   const renderTabBar = (props: any) => {
     return (
       <Box flexDirection="row">
-        {props.navigationState.routes.map((route: any, i: number) => {
+        {props.navigationState.routes.map((item: any, i: number) => {
           const color =
             index === i
               ? useColorModeValue('#000', '#e5e5e5')
               : useColorModeValue('#1f2937', '#a1a1aa');
           const borderColor =
             index === i ? '#020202' : useColorModeValue('#F2F2F2', 'gray.400');
+
           return (
             <Box
               borderBottomWidth="3"
@@ -53,12 +67,16 @@ const Home = ({navigation}: any) => {
               flex={1}
               alignItems="center"
               p="3">
-              <Pressable onPress={() => setIndex(i)}>
+              <Pressable
+                onPress={() => {
+                  setIndex(i);
+                  setType(item.type);
+                }}>
                 <Animated.Text
                   style={{
                     color,
                   }}>
-                  {route.title}
+                  {item.title}
                 </Animated.Text>
               </Pressable>
             </Box>
@@ -67,12 +85,10 @@ const Home = ({navigation}: any) => {
       </Box>
     );
   };
-  const dispatch = useAppDispatch();
-  const {foods} = useAppSelector(state => state.transaction);
 
   useEffect(() => {
-    dispatch(loadFood({id: '', limit: 10, types: ''}));
-  }, [dispatch]);
+    dispatch(loadFood({id: '', limit: 10}));
+  }, [dispatch, type]);
 
   return (
     <VStack h="full" safeAreaTop>

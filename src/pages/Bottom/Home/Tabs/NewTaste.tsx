@@ -1,29 +1,35 @@
-import {ScrollView} from 'native-base';
-import React, {useEffect} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../app/hooks';
+import {useNavigation} from '@react-navigation/native';
+import {Pressable, ScrollView} from 'native-base';
+import React, {useEffect, useState} from 'react';
+import {useAppDispatch} from '../../../../app/hooks';
 
 import {ListData} from '../../../../components/molecules';
-import {loadFood} from '../../../../features/transactions/actions';
+import {loadFoodByType} from '../../../../features/transactions/actions';
 
 const NewTaste = () => {
+  const navigation: any = useNavigation();
   const dispatch = useAppDispatch();
-  const {foods} = useAppSelector(state => state.transaction);
+  const [newState, setNewState] = useState<any>([]);
 
   useEffect(() => {
-    dispatch(loadFood({id: '', limit: 10, types: 'new_food'}));
+    dispatch(loadFoodByType({types: 'new_food'})).then(item => {
+      setNewState(item.payload.data);
+    });
   }, [dispatch]);
 
   return (
     <ScrollView px={6}>
-      {foods?.data?.map((item: any, idx: number) => {
+      {newState?.map((item: any, idx: number) => {
         return (
-          <ListData
-            key={`new-taste-${idx}`}
-            img={item.picturePath}
-            title={item.name}
-            desc={item.price}
-            rating={item.rate}
-          />
+          <Pressable onPress={() => navigation.push('Detail', {item: item})}>
+            <ListData
+              key={`taste${idx}`}
+              title={item.name}
+              img={item.picturePath}
+              desc={item.price}
+              rating={item.rate}
+            />
+          </Pressable>
         );
       })}
     </ScrollView>

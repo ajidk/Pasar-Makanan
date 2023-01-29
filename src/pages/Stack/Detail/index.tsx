@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import {
   Box,
   Button,
@@ -9,37 +10,55 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import React, {useEffect} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../app/hooks';
+import React, {useState} from 'react';
+
 import {ICArrow, PFood} from '../../../assets/img';
 import {Star} from '../../../components/atoms';
-
-import {decrement, increment} from '../../../features/counter/slice';
+import {getStorage} from '../../../utils';
 
 const Detail = ({navigation, route}: any) => {
-  const {value} = useAppSelector(state => state.random);
-  const dispatch = useAppDispatch();
   const {item} = route.params;
-  console.log(item);
+  const [count, setCount] = useState<string | number>(1);
+  const [user, setUser] = useState<any>();
 
-  // const {transactions} = useAppSelector(state => state.transaction);
+  const totalPrice = item.price * Number(count);
 
-  // // console.log('result transaction', transactions);
+  getStorage('user_data').then(item => {
+    setUser(item.user);
+  });
 
-  // useEffect(() => {
-  //   dispatch(loadTransaction({id: id}));
-  // }, [dispatch, id]);
+  const onHandleOrderNow = () => {
+    const driver = 50000;
+    const tax = (10 / 100) * totalPrice;
+    const total = totalPrice + driver + tax;
+    const transaction = {
+      totalItem: count,
+      totalPrice,
+      driver,
+      tax,
+      total,
+    };
+
+    const data = {transaction, user, item};
+
+    navigation.navigate('Payment', data);
+  };
 
   return (
     <Box safeAreaTop flex={1}>
       <Box position="relative" w="full">
-        <Image alt="bg image" source={PFood} resizeMode="cover" w="full" />
+        <Image
+          alt="bg image"
+          source={item.picturePath ? {uri: item.picturePath} : PFood}
+          resizeMode="cover"
+          h={330}
+          w="full"
+        />
         <Box position="absolute" top={4} left={2}>
           <Pressable
             w={8}
             h={8}
             rounded="full"
-            //   bg="red.500"
             justifyContent="center"
             alignItems="center"
             onPress={() => navigation.goBack()}>
@@ -64,31 +83,33 @@ const Detail = ({navigation, route}: any) => {
               <Star price={item.price} />
             </VStack>
             <HStack space={2} alignItems="center">
-              <Pressable onPress={() => dispatch(decrement())}>
+              <Pressable onPress={() => setCount(Number(count) - 1)}>
                 <Box
                   w={26}
                   h={26}
+                  m={0}
                   borderWidth={1}
                   rounded="full"
-                  justifyContent="center"
+                  textAlign="center"
                   alignItems={'center'}>
                   -
                 </Box>
               </Pressable>
               <Input
-                value={String(value)}
+                value={String(count)}
+                onChangeText={count => setCount(count)}
                 w={4}
                 textAlign="center"
                 p={0}
                 borderWidth="0"
               />
-              <Pressable onPress={() => dispatch(increment())}>
+              <Pressable onPress={() => setCount(Number(count) + 1)}>
                 <Box
                   w={26}
                   h={26}
                   borderWidth={1}
                   rounded="full"
-                  justifyContent="center"
+                  textAlign="center"
                   alignItems={'center'}>
                   +
                 </Box>
@@ -108,10 +129,10 @@ const Detail = ({navigation, route}: any) => {
         <HStack mt="auto" justifyContent="space-between">
           <VStack>
             <Text>Total price:</Text>
-            <Text>IDR {item.price * value}</Text>
+            <Text>IDR {totalPrice}</Text>
           </VStack>
           <Button
-            onPress={() => navigation.push('Payment')}
+            onPress={onHandleOrderNow}
             bg="#FFC700"
             rounded="24"
             w={163}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {createSlice} from '@reduxjs/toolkit';
-import {loadFood, loadTransaction} from './actions';
+import {loadFood, loadFoodByType, loadTransaction} from './actions';
 
 interface PropsTransaction {
   transactions: any;

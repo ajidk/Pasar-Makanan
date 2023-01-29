@@ -11,11 +11,13 @@ import {
   useColorModeValue,
   VStack,
 } from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, Dimensions} from 'react-native';
 import {SceneMap, TabView} from 'react-native-tab-view';
+import {useAppDispatch} from '../../../app/hooks';
 import {PCake} from '../../../assets/img';
 import {Header} from '../../../components';
+import {loadTransaction} from '../../../features/transactions/actions';
 import InProgress from './Tabs/InProgress';
 import PostOrders from './Tabs/PostOrders';
 
@@ -28,12 +30,19 @@ const initialLayout = {
   width: Dimensions.get('window').width,
 };
 const Order = ({navigation}: any) => {
-  const [status, setStatus] = useState(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'inProgress', title: 'In Progress'},
     {key: 'pastOrder', title: 'Past Orders'},
   ]);
+
+  const dispatch = useAppDispatch();
+  const [progress, setProgress] = useState<any>([]);
+  useEffect(() => {
+    dispatch(loadTransaction({limit: 10, status: 'ON_DELIVERY'})).then(item => {
+      setProgress(item?.payload?.data);
+    });
+  }, [dispatch]);
 
   const renderTabBar = (props: any) => {
     return (
@@ -66,9 +75,10 @@ const Order = ({navigation}: any) => {
       </Box>
     );
   };
+
   return (
     <Box safeAreaTop h="full">
-      {status ? (
+      {progress?.data?.length === 0 ? (
         <Center h="full">
           <Image
             resizeMode="cover"

@@ -4,7 +4,7 @@ import {PMeditation} from '../../../assets/img';
 import {Star} from '../../atoms';
 
 interface Props {
-  img: any;
+  img?: any;
   title: string;
   desc: number;
   rating?: number;
